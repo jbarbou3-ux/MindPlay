@@ -6,37 +6,49 @@ public class MindPlay {
     public static void main(String[] args) {
         Scanner kb = new Scanner(System.in);
 
-        // Fancy title screen
+        // Show the title screen and rules
         printTitleScreen(kb);
 
+        // Build all the questions for the game
         Question[] questions = buildQuestionBank();
 
+        // Variables to track score and when the game should stop
         int score = 0;
         int strikes = 0;
-        final int MAX_STRIKES = 4;
-        final int MAX_QUESTIONS_ANSWERED = 6;
+        final int MAX_STRIKES = 4;  // after 4 strikes the game ends
+        final int MAX_QUESTIONS_ANSWERED = 6; // total turns allowed
 
         int questionsAnswered = 0;
 
+        // Main game loop
         while (strikes < MAX_STRIKES
                 && questionsAnswered < MAX_QUESTIONS_ANSWERED
                 && hasUnusedQuestions(questions)) {
 
+            // Get one unused question from each category
             int[] optionIndices = getOneFromEachCategory(questions);
 
+            // Show the 4 options for this round
             printRoundOptions(questions, optionIndices, score, strikes, questionsAnswered + 1);
 
+            // Let player pick 1–4
             int choicePos = readOptionChoice(kb, optionIndices.length);
             int questionIndex = optionIndices[choicePos - 1];
             Question q = questions[questionIndex];
 
+            // Ask that question and print answer choices
             askQuestion(q);
 
+            // Read answer A–D
             char answer = readAnswerChoice(kb);
 
+            // Check if correct
             boolean correct = q.checkAnswer(answer);
+
+            // Mark this question as used so we don't ask it again
             q.markUsed();
 
+            // Update score and strikes
             if (correct) {
                 System.out.println("Correct! You earned " + q.getPoints() + " points.");
                 score += q.getPoints();
@@ -44,18 +56,23 @@ public class MindPlay {
                 System.out.println("Incorrect! You have earned a strike and lost "
                                    + q.getPoints() + " points.");
                 score -= q.getPoints();
-                strikes++;
+                strikes++;  // add a strike
                 System.out.println("Strikes: " + strikes + "/4");
             }
 
             questionsAnswered++;
 
+            // Print score after each question
             System.out.println("Current score: " + score);
             System.out.println("------------------------------------");
+
+            // Pause until user presses A
             waitForContinue(kb);
+
             System.out.println();
         }
 
+        // Game over messages
         System.out.println();
         System.out.println("====================================");
 
@@ -67,26 +84,20 @@ public class MindPlay {
             System.out.println("No more questions available.");
         }
 
+        // Final score
         System.out.println("Final score: " + score);
         System.out.println("====================================");
 
         kb.close();
     }
 
-    // Pretty title screen with ASCII art
+    // Title screen and rules
     public static void printTitleScreen(Scanner kb) {
         System.out.println("************************************************");
         System.out.println("*                                              *");
         System.out.println("*                  MindPlay                    *");
         System.out.println("*                                              *");
         System.out.println("************************************************");
-        System.out.println();
-        System.out.println(" __  __ _           _ _ ____  _                ");
-        System.out.println("|  \\/  (_)_ __   __| (_)  _ \\| |_   _ _   _    ");
-        System.out.println("| |\\/| | | '_ \\ / _` | | |_) | | | | | | | |   ");
-        System.out.println("| |  | | | | | | (_| | |  __/| | |_| | |_| |   ");
-        System.out.println("|_|  |_|_|_| |_|\\__,_|_|_|   |_|\\__,_|\\__, |   ");
-        System.out.println("                                        |___/  ");
         System.out.println();
         System.out.println("A trivia challenge in Sports, Music, Movies,");
         System.out.println("and Pop Culture.");
@@ -103,7 +114,7 @@ public class MindPlay {
         System.out.println();
     }
 
-    // Pause after each question
+    // Pauses and waits for user to press A then Enter
     public static void waitForContinue(Scanner kb) {
         System.out.print("Press A then Enter to continue: ");
         while (true) {
@@ -115,10 +126,9 @@ public class MindPlay {
         }
     }
 
-    /** BUILD QUESTION BANK **/
+    // Builds all the questions for all categories
     public static Question[] buildQuestionBank() {
         Question[] questions = new Question[16];
-
         int index = 0;
 
         // SPORTS
@@ -208,6 +218,7 @@ public class MindPlay {
         return questions;
     }
 
+    // Checks if any unused question is left
     public static boolean hasUnusedQuestions(Question[] questions) {
         for (Question q : questions) {
             if (!q.isUsed()) return true;
@@ -215,6 +226,7 @@ public class MindPlay {
         return false;
     }
 
+    // picks one unused question from each category
     public static int[] getOneFromEachCategory(Question[] questions) {
         Random rand = new Random();
         int[] result = new int[4];
@@ -227,6 +239,7 @@ public class MindPlay {
         return result;
     }
 
+    // helper to get unused question from category
     public static int getRandomUnusedFromCategory(Question[] questions, String category, Random rand) {
         int[] temp = new int[questions.length];
         int count = 0;
@@ -240,6 +253,7 @@ public class MindPlay {
         return temp[rand.nextInt(count)];
     }
 
+    // Print the question choices and score for the round
     public static void printRoundOptions(Question[] questions, int[] indices,
                                          int score, int strikes, int roundNumber) {
         System.out.println("Round " + roundNumber);
@@ -253,6 +267,7 @@ public class MindPlay {
         System.out.println();
     }
 
+    // Read user’s menu choice (1–4)
     public static int readOptionChoice(Scanner kb, int optionCount) {
         int choice = -1;
         while (true) {
@@ -268,6 +283,7 @@ public class MindPlay {
         }
     }
 
+    // Prints the question text and answer choices A–D
     public static void askQuestion(Question q) {
         System.out.println("\nCategory: " + q.getCategory());
         System.out.println("For " + q.getPoints() + " points:");
@@ -283,6 +299,7 @@ public class MindPlay {
         System.out.println();
     }
 
+    // Reads and validates answer input A–D
     public static char readAnswerChoice(Scanner kb) {
         while (true) {
             System.out.print("Your answer (A-D): ");
