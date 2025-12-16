@@ -1,16 +1,26 @@
-// This class stores all the information about a single trivia question.
-// Each Question has a category, question text, 4 answer options,
-// the correct answer index, and a point value.
 /**
- * Name: Juliana Barbour
- * Class: Fall 2025
+ * Question - Trivia Question Class
+ * This class stores all the information about a single trivia question.
+ * Each Question has:
+ * - a category
+ * - question text
+ * - 4 answer options (A-D)
+ * - the correct answer index
+ * - a point value
+ * - a used flag so questions are not repeated
+ *
+ * This class includes methods to check answers and mark questions as used.
+ *
+ * @author Juliana Barbour
+ * @version Fall 2025
  */
+
 public class Question {
 
     private String category;     // Sports, Music, Movies, etc.
     private String text;         // the question being asked
     private String[] options;    // answer choices (A,B,C,D)
-    private int correctIndex;    // which option is correct (0–3)
+    private int correctIndex;    // which option is correct (0-3)
     private int points;          // points awarded for this question
     private boolean used;        // to prevent asking the same question again
 
@@ -24,7 +34,7 @@ public class Question {
         this.used = false;
     }
 
-    // Getter methods to access the private data
+    // Getter methods
     public String getCategory() { return category; }
     public String getText() { return text; }
     public String[] getOptions() { return options; }
@@ -36,7 +46,7 @@ public class Question {
         used = true;
     }
 
-    // Checks if the user's answer (A–D) matches the correct option
+    // Checks if the user's answer (A-D) matches the correct option
     public boolean checkAnswer(char userChoice) {
         userChoice = Character.toUpperCase(userChoice);
 
@@ -50,7 +60,7 @@ public class Question {
         return choiceIndex == correctIndex;
     }
 
-    // For debugging – prints info about the question
+    // Prints basic info about the question
     public String toString() {
         return "[" + category + "] " + text + " (" + points + " pts)";
     }
