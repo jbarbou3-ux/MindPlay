@@ -1,7 +1,7 @@
 // This class stores all the information about a single trivia question.
 // Each Question has a category, question text, 4 answer options,
 // the correct answer index, and a point value.
-
+Author: Juliana Barbour
 public class Question {
 
     private String category;     // Sports, Music, Movies, etc.
