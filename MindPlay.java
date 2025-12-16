@@ -1,6 +1,12 @@
 import java.util.Random;
 import java.util.Scanner;
-Author: Juliana Barbour
+
+/**
+ * Name: Juliana Barbour
+ * Class: Fall 2025
+ * Description: Menu-driven trivia game that asks users multiple-choice questions,
+ * tracks points and strikes, and ends the game based on user performance.
+ */
 
 public class MindPlay {
 
