@@ -2,10 +2,28 @@ import java.util.Random;
 import java.util.Scanner;
 
 /**
- * Name: Juliana Barbour
- * Class: Fall 2025
- * Description: Menu-driven trivia game that asks users multiple-choice questions,
- * tracks points and strikes, and ends the game based on user performance.
+ * MindPlay - Trivia Game Final Project
+ * This program runs a menu-driven trivia game with four categories:
+ * - Sports
+ * - Music
+ * - Movies
+ * - Pop Culture
+ *
+ * Each round displays one unused question from each category and the user selects
+ * which category to attempt. The user answers using letters (A-D) to reduce
+ * spelling/input mistakes.
+ *
+ * The program tracks:
+ * - Score (adds points for correct answers, subtracts points for incorrect answers)
+ * - Strikes (a wrong answer adds a strike)
+ *
+ * The game ends when:
+ * - The user reaches 4 strikes, OR
+ * - The user answers 6 questions, OR
+ * - There are no more usable questions available
+ *
+ * @author Juliana Barbour
+ * @version Fall 2025
  */
 
 public class MindPlay {
@@ -30,7 +48,8 @@ public class MindPlay {
         // Main game loop
         while (strikes < MAX_STRIKES
                 && questionsAnswered < MAX_QUESTIONS_ANSWERED
-                && hasUnusedQuestions(questions)) {
+                && hasUnusedQuestions(questions)
+                && hasUnusedInAllCategories(questions)) {
 
             // Get one unused question from each category
             int[] optionIndices = getOneFromEachCategory(questions);
@@ -233,6 +252,24 @@ public class MindPlay {
         return false;
     }
 
+    // Checks if there is at least one unused question in each category
+    public static boolean hasUnusedInAllCategories(Question[] questions) {
+        return hasUnusedInCategory(questions, "Sports")
+                && hasUnusedInCategory(questions, "Music")
+                && hasUnusedInCategory(questions, "Movies")
+                && hasUnusedInCategory(questions, "Pop Culture");
+    }
+
+    // Helper: checks if there is at least one unused question in a specific category
+    public static boolean hasUnusedInCategory(Question[] questions, String category) {
+        for (Question q : questions) {
+            if (!q.isUsed() && q.getCategory().equals(category)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // picks one unused question from each category
     public static int[] getOneFromEachCategory(Question[] questions) {
         Random rand = new Random();
@@ -257,6 +294,12 @@ public class MindPlay {
             }
         }
 
+        // count should never be 0 because we check hasUnusedInAllCategories() in the loop,
+        // but this avoids crashing if something unexpected happens.
+        if (count == 0) {
+            return -1;
+        }
+
         return temp[rand.nextInt(count)];
     }
 
@@ -276,7 +319,7 @@ public class MindPlay {
 
     // Read user’s menu choice (1–4)
     public static int readOptionChoice(Scanner kb, int optionCount) {
-        int choice = -1;
+        int choice;
         while (true) {
             System.out.print("Enter choice: ");
             if (kb.hasNextInt()) {
@@ -286,7 +329,7 @@ public class MindPlay {
             } else {
                 kb.nextLine();
             }
-            System.out.println("Invalid input. Try again.");
+            System.out.println("Invalid input. Please enter a number between 1 and 4.");
         }
     }
 
@@ -306,18 +349,17 @@ public class MindPlay {
         System.out.println();
     }
 
-    // Reads and validates answer input A–D
+    // Reads and validates answer input A–D (with a clearer error message)
     public static char readAnswerChoice(Scanner kb) {
         while (true) {
-            System.out.print("Your answer (A-D): ");
+            System.out.print("Your answer (A, B, C, or D): ");
             String input = kb.nextLine().trim().toUpperCase();
-            if (input.length() == 1 &&
-                    (input.charAt(0) == 'A' || input.charAt(0) == 'B'
-                            || input.charAt(0) == 'C' || input.charAt(0) == 'D')) {
+
+            if (input.length() == 1 && "ABCD".indexOf(input.charAt(0)) >= 0) {
                 return input.charAt(0);
             }
-            System.out.println("Invalid choice.");
+
+            System.out.println("Invalid input. Please enter ONLY A, B, C, or D.");
         }
     }
 }
-
